@@ -86,4 +86,37 @@
         end
     ```
 ## 在table中存放不同的数据
-1. 因为table中可以存放各种类型的数据,所以在设计这个table的时候,可能
+1. 因为table中可以存放各种类型的数据,包括table,甚至于函数,所以在使用的时候,需要分清楚table中的数据用法
+```Lua
+    local tb={} --空表
+    --[[
+        因为在插入数据的时候,后续可能不清楚到底插入了哪些数据或者数据的格式,因此可以在注释中补充表的格式以及作用
+        tb={
+            count   --记录个数
+            record={ --存储记录
+                [rank]={    --每条记录的格式
+                    id
+                    name
+                    grade
+                }
+            }
+        }
+    ]]
+
+    local function addRecord(id,name,grade)
+        if not tb.record then tb.record={} end --使用前最好检查要使用的内容是不是nil
+        local record={
+            id=id,          -- 这里其实等价 ["id"]=id  后面的id是传入的参数
+            name=name,      -- 如果感觉不容易区分,换参数名就行
+            grade=grade
+        }
+        tb.record[tb.count or 0]=record --对于数值,如果没有赋值默认为nil
+        --使用的时候可以使用or运算符   tb.count or 0 如果之前没有定义过tb.count,那么就用0,当然,使用其他值  比如tb.count or 1也是可以的
+        tb.count =(tb.count or 0)+1
+        
+        --[[
+            补充: 这里的count用的是默认值0,所以后续循环的话可以从0开始
+            选中其他默认值也是可以的,没有一定的规则
+        ]]
+    end
+```
